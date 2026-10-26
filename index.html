@@ -158,7 +158,10 @@ form.addEventListener('submit',async function(e){
  const offer=offers[offerCode];
  const transactionId=makeTransactionId();
  const payload={
-  sku:VYRQON_SKU,productSku:VYRQON_SKU,offerCode:offerCode,
+  sku:VYRQON_SKU,productSku:VYRQON_SKU,
+  product:'VYRQON RGB Car Interior Lights',productName:'VYRQON RGB Car Interior Lights',
+  offerCode:offerCode,offer:offer.label,offerLabel:offer.label,
+  quantity:offer.quantity,price:offer.price,total:offer.price,
   transactionId:transactionId,clientOrderId:transactionId,
   name:name,phone:phone,
   country:'SA',currency:'SAR',source:'VYRQON Website',
@@ -177,7 +180,7 @@ form.addEventListener('submit',async function(e){
   // because the response is opaque, this confirms dispatch only, not server-side acceptance.
   await fetch(ORDER_API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow'});
   msg.style.color='#ffcf8b';
-  msg.textContent='تم إرسال الطلب إلى النظام. إذا لم يتصل بك فريق التأكيد، يرجى المحاولة لاحقًا أو التواصل مع المتجر.';
+  msg.textContent='تم إرسال الطلب من الصفحة، لكن تعذّر تأكيد تسجيله في الجدول تلقائيًا. إذا لم يظهر الطلب في Sheets، لا تكرر الإرسال قبل التحقق من إعدادات النظام.';
   snaptr('track','START_CHECKOUT',{price:offer.price,currency:'SAR',item_ids:[VYRQON_SKU],item_category:'Car Accessories'});
  }catch(err){
   msg.style.color='#ff9b9b';
