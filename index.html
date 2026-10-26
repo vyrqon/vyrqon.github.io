@@ -44,6 +44,23 @@ snaptr('track','PAGE_VIEW');
 .offer-tag{position:absolute;top:-10px;right:8px;padding:1px 7px;background:var(--cyan);color:#071310;font-size:10px;font-weight:800}
 @media(max-width:480px){.offer-grid{gap:6px}.offer-option{padding:10px 4px;min-height:105px}.offer-price{font-size:21px}.offer-count{font-size:12px}}
 
+
+/* Premium sticky checkout CTA */
+.mobile-bar{display:none}
+.sticky-order-cta{position:fixed;z-index:50;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(8,13,18,0),rgba(8,13,18,.96) 24%);border:0;backdrop-filter:blur(12px)}
+.sticky-order-inner{width:min(100%,560px);margin:0 auto;display:flex;align-items:center;gap:12px;padding:9px 10px 9px 12px;border:1px solid rgba(121,243,227,.28);border-radius:14px;background:rgba(13,23,30,.97);box-shadow:0 10px 36px rgba(0,0,0,.38),0 0 22px rgba(121,243,227,.08)}
+.sticky-order-copy{min-width:0;flex:1;display:flex;flex-direction:column;line-height:1.35}
+.sticky-order-copy strong{font-size:12px;color:#f4f7f8}
+.sticky-order-copy span{font-size:10px;color:#9fb1b9;margin-top:3px}
+.sticky-order-button{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:47px;padding:0 18px;border-radius:9px;background:linear-gradient(135deg,#a3fff1,#65e6d4);color:#071310;font-size:13px;font-weight:800;box-shadow:0 5px 16px rgba(82,223,205,.16);transition:transform .18s,filter .18s}
+.sticky-order-button:active{transform:scale(.98);filter:brightness(.95)}
+.sticky-order-arrow{font-size:17px;line-height:1}
+html{scroll-behavior:auto}
+#order{scroll-margin-top:14px}
+@media(min-width:761px){.sticky-order-cta{display:none!important}}
+@media(max-width:760px){.sticky-order-cta{display:block}.footer{padding-bottom:112px}.mobile-bar{display:none!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
 </style>
 </head>
 <body>
@@ -61,9 +78,23 @@ snaptr('track','PAGE_VIEW');
 <section class="section order" id="order"><div class="wrap"><div class="order-card"><div class="kicker" style="text-align:center">VYRQON / ORDER</div><h2>اطلب Vyrqon</h2><p class="sub">أدخل بياناتك للانتقال إلى الخطوة التالية.</p><div class="price-note"><strong style="display:block;font-size:18px;margin-bottom:14px;color:#fff">اختر العرض المناسب لك</strong><div class="offer-grid"><label class="offer-option"><input type="radio" name="offer" value="قطعتان — 178 ريال" required><span class="offer-count">2 قطع</span><span class="offer-price">178 <small>ريال</small></span></label><label class="offer-option featured"><input type="radio" name="offer" value="4 قطع — 199 ريال" required><span class="offer-tag">الأوفر</span><span class="offer-count">4 قطع</span><span class="offer-price">199 <small>ريال</small></span></label><label class="offer-option"><input type="radio" name="offer" value="6 قطع — 219 ريال" required><span class="offer-count">6 قطع</span><span class="offer-price">219 <small>ريال</small></span></label></div><p style="margin:12px 0 0">اختر عدد القطع قبل متابعة الطلب.</p></div><form id="orderForm" novalidate><div class="form-grid"><div class="field full"><label for="name">الاسم الكامل</label><input id="name" name="name" autocomplete="name" required maxlength="80" placeholder="الاسم الكامل"></div><div class="field"><label for="phone">رقم الهاتف السعودي</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="16" placeholder="05xxxxxxxx"></div><div class="field"><label for="city">المدينة</label><input id="city" name="city" autocomplete="address-level2" required maxlength="60" placeholder="مدينتك"></div><div class="field full"><label for="address">الحي والشارع والعنوان</label><input id="address" name="address" autocomplete="street-address" required maxlength="180" placeholder="أدخل عنوان التوصيل"></div></div><button class="btn btn-primary submit" type="submit">متابعة الطلب ←</button><p class="form-msg" id="formMsg" role="status">أدخل بيانات التوصيل واختر الباقة؛ سنتواصل معك لتأكيد الطلب.</p></form><p class="legal">VYRQON · تفاصيل المنتج والتوافق تخضع لمواصفات النسخة المعروضة. استخدم الإضاءة بما لا يشتت السائق أو يخالف الأنظمة المحلية.</p></div></div></section>
 </main>
 <footer class="footer"><div class="wrap footer-inner"><a class="logo" href="#">VYR<span>Q</span>ON</a><span>إضاءة داخلية متعددة الألوان لسيارتك.</span><span>© <span id="year"></span> VYRQON</span></div></footer>
-<div class="mobile-bar"><a class="btn btn-primary" href="#order">اكتشف المنتج واطلبه ←</a></div>
+<div class="sticky-order-cta" role="region" aria-label="الانتقال لإتمام الطلب"><div class="sticky-order-inner"><div class="sticky-order-copy"><strong>VYRQON · إضاءة سيارتك</strong><span>اختر باقتك وأكمل بيانات التوصيل</span></div><a class="sticky-order-button" href="#order" id="stickyCheckout">اطلب الآن <span class="sticky-order-arrow" aria-hidden="true">←</span></a></div></div>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
+
+/* Keep sticky CTA navigation immediate and focused on the checkout form. */
+(function(){
+ const sticky=document.getElementById('stickyCheckout');
+ const order=document.getElementById('order');
+ const firstField=document.getElementById('name');
+ if(!sticky||!order)return;
+ sticky.addEventListener('click',function(ev){
+  ev.preventDefault();
+  order.scrollIntoView({behavior:'auto',block:'start'});
+  if(window.history&&window.history.replaceState)window.history.replaceState(null,'','#order');
+ });
+})();
+
 const ORDER_API="https://script.google.com/macros/s/AKfycbxxBGHE4mZ5iDdplvvaFxVhrHoOMETyRoafgk8iG-DGx9vhY27JgFhc3VHFBO22hu4x0w/exec";
 const VYRQON_SKU='VYRQON-RGB-CAR-LIGHTS';
 const form=document.getElementById('orderForm');
