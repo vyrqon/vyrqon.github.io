@@ -51,16 +51,34 @@ body.checkout-open .topbar,body.checkout-open main>section:not(#order),body.chec
 body.checkout-open #order{display:block!important;position:fixed;inset:0;z-index:100;overflow-y:auto;overscroll-behavior:contain;padding:18px 0 calc(24px + env(safe-area-inset-bottom));margin:0;scroll-margin:0;background:#080d12}
 body.checkout-open #order .wrap{width:min(100% - 24px,680px)}
 body.checkout-open #order .order-card{margin:0 auto;min-height:calc(100dvh - 36px)}
-body.checkout-open #order .order-card{display:flex;flex-direction:column;gap:8px}
-body.checkout-open #order .order-card h2{margin-bottom:0}
-body.checkout-open #order .order-card .sub{margin-bottom:8px}
-body.checkout-open #order .order-card form{order:1}
-body.checkout-open #order .order-card .price-note{order:2;margin-top:12px}
-body.checkout-open #order .order-card .checkout-close{order:0}
+/* Checkout layout: offers first, then customer details; keep both visible together */
+body.checkout-open #order{padding:10px 0 calc(12px + env(safe-area-inset-bottom))}
+body.checkout-open #order .order-card{display:flex;flex-direction:column;gap:5px;padding:clamp(14px,3vw,24px);min-height:0}
+body.checkout-open #order .order-card .checkout-close{order:0;margin-bottom:4px;padding:7px}
 body.checkout-open #order .order-card .kicker,body.checkout-open #order .order-card h2,body.checkout-open #order .order-card .sub{order:0}
-body.checkout-open #order .order-card .form-grid{gap:10px}
-body.checkout-open #order .order-card .field input{padding:12px}
-body.checkout-open #order .order-card .submit{margin-top:12px}
+body.checkout-open #order .order-card h2{margin:2px 0}
+body.checkout-open #order .order-card .sub{margin:0 0 4px;font-size:12px}
+body.checkout-open #order .order-card .price-note{order:1;margin:4px 0 8px;padding:9px}
+body.checkout-open #order .order-card .price-note>strong{font-size:15px!important;margin-bottom:7px!important}
+body.checkout-open #order .order-card .price-note>p{margin-top:6px!important;font-size:11px}
+body.checkout-open #order .order-card form{order:2}
+body.checkout-open #order .order-card .form-grid{gap:7px}
+body.checkout-open #order .order-card .field{gap:4px}
+body.checkout-open #order .order-card .field input{padding:10px}
+body.checkout-open #order .order-card .submit{margin-top:9px;padding:11px}
+body.checkout-open #order .order-card .form-msg{margin:6px 0 0;font-size:11px}
+body.checkout-open #order .offer-grid{gap:7px;margin-top:5px}
+body.checkout-open #order .offer-option{min-height:78px;padding:7px 4px;gap:3px}
+body.checkout-open #order .offer-price{font-size:21px}
+body.checkout-open #order .offer-count{font-size:12px}
+body.checkout-open #order .offer-tag{top:-8px;font-size:9px}
+@media(max-width:480px){
+ body.checkout-open #order .wrap{width:calc(100% - 20px)}
+ body.checkout-open #order .order-card{padding:12px}
+ body.checkout-open #order .order-card h2{font-size:25px}
+ body.checkout-open #order .offer-option{min-height:74px}
+ body.checkout-open #order .offer-price{font-size:19px}
+}
 .checkout-close{display:flex;align-items:center;justify-content:center;width:100%;margin:0 0 16px;padding:10px;border:1px solid var(--line);background:#111c24;color:#dce8eb;border-radius:5px;cursor:pointer;font-weight:700}
 /* Premium sticky checkout CTA */
 .mobile-bar{display:none}
