@@ -173,21 +173,23 @@ form.addEventListener('submit',async function(e){
        utm_content:new URLSearchParams(location.search).get('utm_content')||'',
        sc_click_id:new URLSearchParams(location.search).get('sc_click_id')||''}
  };
- sending=true;submitButton.disabled=true;submitButton.textContent='جارٍ إرسال الطلب…';
- msg.style.color='#d6e2e5';msg.textContent='جارٍ إرسال طلبك، يرجى الانتظار وعدم الضغط مرة أخرى.';
+ // أرسل الطلب دون انتظار رد Apps Script حتى لا تبقى الواجهة عالقة على "جارٍ الإرسال".
+ sending=true;submitButton.disabled=true;submitButton.textContent='تم إرسال الطلب ✓';
+ msg.style.color='#ffcf8b';
+ msg.textContent='شكرًا لثقتك بـ VYRQON! تم إرسال طلبك، وسنتواصل معك قريبًا على رقم الهاتف الذي أدخلته لتأكيد تفاصيل الطلب قبل الشحن.';
+ let request;
  try{
-  // Apps Script Web App accepts JSON text in POST body. no-cors avoids browser CORS blocking;
-  // because the response is opaque, this confirms dispatch only, not server-side acceptance.
-  await fetch(ORDER_API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow'});
-  msg.style.color='#ffcf8b';
-  msg.textContent='شكرًا لثقتك بـ VYRQON! تم إرسال طلبك بنجاح، وسنتواصل معك قريبًا على رقم الهاتف الذي أدخلته لتأكيد تفاصيل الطلب قبل الشحن.';
-  snaptr('track','START_CHECKOUT',{price:offer.price,currency:'SAR',item_ids:[VYRQON_SKU],item_category:'Car Accessories'});
+  request=fetch(ORDER_API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow',keepalive:true});
  }catch(err){
-  msg.style.color='#ff9b9b';
-  msg.textContent='تعذر إرسال الطلب. تحقق من اتصال الإنترنت وحاول مجددًا.';
- }finally{
   sending=false;submitButton.disabled=false;submitButton.textContent='متابعة الطلب ←';
+  msg.style.color='#ff9b9b';msg.textContent='تعذر بدء إرسال الطلب. تحقق من اتصال الإنترنت وحاول مجددًا.';return;
  }
+ request.then(function(){
+  if(typeof snaptr==='function')snaptr('track','START_CHECKOUT',{price:offer.price,currency:'SAR',item_ids:[VYRQON_SKU],item_category:'Car Accessories'});
+ }).catch(function(){
+  sending=false;submitButton.disabled=false;submitButton.textContent='إعادة المحاولة';
+  msg.style.color='#ff9b9b';msg.textContent='لم يكتمل إرسال الطلب بسبب مشكلة في الاتصال. يرجى المحاولة مرة أخرى.';
+ });
 });
 document.querySelectorAll('input[name="offer"]').forEach(function(input){
  input.addEventListener('change',function(){
