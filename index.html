@@ -148,6 +148,11 @@ document.getElementById('year').textContent=new Date().getFullYear();
   document.body.classList.add('checkout-open');
   order.scrollTop=0;
   if(window.history&&window.history.replaceState)window.history.replaceState(null,'','#order');
+  // Count checkout when the customer actually opens the order form.
+  if(typeof snaptr==='function')snaptr('track','START_CHECKOUT',{
+   item_ids:['VYRQON-RGB-CAR-LIGHTS'],item_category:'Car Accessories',
+   currency:'SAR',number_items:2,price:178
+  });
   const firstField=document.getElementById('name');
   if(firstField){try{firstField.focus({preventScroll:true});}catch(_){firstField.focus();}}
  }
@@ -213,15 +218,30 @@ form.addEventListener('submit',async function(e){
   msg.style.color='#ff9b9b';msg.textContent='تعذر بدء إرسال الطلب. تحقق من اتصال الإنترنت وحاول مجددًا.';return;
  }
  request.then(function(){
-  if(typeof snaptr==='function')snaptr('track','START_CHECKOUT',{price:offer.price,currency:'SAR',item_ids:[VYRQON_SKU],item_category:'Car Accessories'});
+  // The customer submitted a valid COD order. This is an order-submission conversion,
+  // not proof that the Apps Script/Google Sheet accepted the row.
+  if(typeof snaptr==='function')snaptr('track','PURCHASE',{
+   price:offer.price,currency:'SAR',transaction_id:transactionId,
+   item_ids:[VYRQON_SKU],item_category:'Car Accessories',
+   number_items:offer.quantity
+  });
  }).catch(function(){
   sending=false;submitButton.disabled=false;submitButton.textContent='إعادة المحاولة';
   msg.style.color='#ff9b9b';msg.textContent='لم يكتمل إرسال الطلب بسبب مشكلة في الاتصال. يرجى المحاولة مرة أخرى.';
  });
 });
+// Product view: fire on page load so Pixel Helper can detect the product event immediately.
+if(typeof snaptr==='function')snaptr('track','VIEW_CONTENT',{
+ item_ids:[VYRQON_SKU],item_category:'Car Accessories',currency:'SAR',price:178
+});
 document.querySelectorAll('input[name="offer"]').forEach(function(input){
  input.addEventListener('change',function(){
-  if(typeof snaptr==='function')snaptr('track','VIEW_CONTENT',{item_ids:[VYRQON_SKU],item_category:'Car Accessories'});
+  const code=input.value.startsWith('قطعتان')?1:(input.value.startsWith('4 قطع')?2:3);
+  const chosen=offers[code];
+  if(typeof snaptr==='function')snaptr('track','VIEW_CONTENT',{
+   item_ids:[VYRQON_SKU],item_category:'Car Accessories',
+   currency:'SAR',price:chosen.price,number_items:chosen.quantity
+  });
  });
 });
 </script>
